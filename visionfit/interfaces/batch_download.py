@@ -50,7 +50,7 @@ class BatchDownloadInterface:
                         if num_failed > 0:
                             print(f"\033[91m {num_failed} jobs have failed")
                         link_html = CustomFileLink(
-                            os.path.relpath(self.batch_path, os.getcwd()), link_text="link", result_html_suffix="x"
+                            os.path.relpath(self.batch_path, os.getcwd()), link_text="link", result_html_suffix=""
                         ).to_html()
                         display(
                             HTML(
@@ -66,7 +66,8 @@ class BatchDownloadInterface:
             # Display duration since job was registered by API endpoint
             job_duration = self._calculate_job_duration()
             with self.output:
-                print(f"Your data is still being generated. Time elapsed: {self._duration_to_str(job_duration)}")
+                print(f"Your data is still being generated.")
+                print(f"Time elapsed: {self._duration_to_str(job_duration)}")
                 print(f"{len(completed_jobs)}/{len(self.batch.jobs)} submitted jobs have completed.")
 
     def _calculate_job_duration(self) -> datetime.timedelta:
