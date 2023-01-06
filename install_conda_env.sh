@@ -4,7 +4,7 @@
 
 conda create --name infinity-tutorials python=3.9
 conda activate infinity-tutorials
-pip install -r requirements.txt
+pip install -r requirements.txt --force-reinstall
 
 # TODO: Add arguments for removal
 #conda deactivate
