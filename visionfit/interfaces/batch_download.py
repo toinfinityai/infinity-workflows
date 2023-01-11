@@ -1,6 +1,7 @@
 import os
 import datetime
 import ipywidgets as widgets
+import sys
 
 from string import Formatter
 from IPython.display import display, HTML
@@ -39,29 +40,38 @@ class BatchDownloadInterface:
 
         successful_jobs = self.batch.get_valid_completed_jobs()
         completed_jobs = self.batch.get_completed_jobs()
+        
+        link_html = CustomFileLink(
+                        os.path.relpath(self.batch_path, os.getcwd()), link_text="link", result_html_suffix=""
+                    ).to_html()
+        
+        try:
+            # Supress download prints
+            old_stdout = sys.stdout 
+            sys.stdout = open(os.devnull, "w")
+            download_status = self.batch.download(path=self.batch_path)
+            sys.stdout = old_stdout
+        except DownloadError as e:
+            print(str(e))
 
         # Check if job still ongoing
         if len(completed_jobs) == len(self.batch.jobs):
             # Visualize the completed job.
             with self.output:
-                try:
-                    if self.batch.download(path=self.batch_path):
-                        num_failed = len(self.batch.jobs) - len(successful_jobs)
-                        if num_failed > 0:
-                            print(f"\033[91m {num_failed} jobs have failed")
-                        link_html = CustomFileLink(
-                            os.path.relpath(self.batch_path, os.getcwd()), link_text="link", result_html_suffix=""
-                        ).to_html()
-                        display(
-                            HTML(
-                                f'<div style="font-family: monospace">'
-                                f"\nDownload Path: {os.path.abspath(self.batch_path)} "
-                                f"({link_html})"
-                                f"</div>"
-                            ),
-                        )
-                except DownloadError as e:
-                    print(str(e))
+                if download_status:
+                    num_failed = len(self.batch.jobs) - len(successful_jobs)
+                    if num_failed > 0:
+                        print(f"\033[91m {num_failed} jobs have failed")
+                    display(
+                        HTML(
+                            f'<div style="font-family: monospace">'
+                            f"<div> \nYour batch of data has been downloaded.</div>" 
+                            f"\nPath to Data on Local Machine: {os.path.abspath(self.batch_path)} "
+                            f"({link_html})"
+                            f"</div>"
+                        ),
+                    )
+
         else:
             # Display duration since job was registered by API endpoint
             job_duration = self._calculate_job_duration()
@@ -69,6 +79,18 @@ class BatchDownloadInterface:
                 print(f"Your data is still being generated.")
                 print(f"Time elapsed: {self._duration_to_str(job_duration)}")
                 print(f"{len(completed_jobs)}/{len(self.batch.jobs)} submitted jobs have completed.")
+                
+                if download_status:
+                    display(
+                        HTML(
+                            f'<div style="font-family: monospace">'
+                            f"<div> \nThe completed jobs in your batch have been downloaded.</div>" 
+                            f"\nPath to Data on Local Machine: {os.path.abspath(self.batch_path)} "
+                            f"({link_html})"
+                            f"</div>"
+                        ),
+                    )
+                
 
     def _calculate_job_duration(self) -> datetime.timedelta:
         """Returns the duration of time since the job was registered by the API."""
