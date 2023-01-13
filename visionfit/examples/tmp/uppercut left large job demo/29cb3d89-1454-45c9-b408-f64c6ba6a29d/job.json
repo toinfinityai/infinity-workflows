@@ -1,0 +1,33 @@
+{
+    "name": "visionfit-v0.4.0",
+    "params": {
+        "scene": "LIVINGROOM_1",
+        "exercise": "UPPERCUT-LEFT",
+        "gender": "FEMALE",
+        "num_reps": 4,
+        "inter_rep_delay_avg": 1.2193405051045716,
+        "inter_rep_delay_var": 1.775618611663196,
+        "rel_baseline_speed": 0.8593516610938365,
+        "max_rel_speed_change": 0.18902366447269192,
+        "kinematic_noise_factor": 0.47145728469347503,
+        "camera_distance": 4.65076852329233,
+        "camera_height": 1.0305930532005252,
+        "add_wall_art": true,
+        "wall_art_type": "non_human",
+        "avatar_identity": 24,
+        "outfit": 2,
+        "hide_shoes": false,
+        "allowable_occlusion": 24.662562982544493,
+        "relative_height": 1.825826252592739,
+        "relative_weight": 0.39770725145510294,
+        "relative_camera_pitch_deg": 3.75129530034814,
+        "lighting_power": 274.5148848649406,
+        "relative_avatar_angle_deg": 35.70848129093875,
+        "frame_rate": 6,
+        "image_width": 256,
+        "image_height": 256,
+        "enable_sensor_noise": true,
+        "state": null,
+        "relative_camera_yaw_deg": 5.208208727289197
+    }
+}
