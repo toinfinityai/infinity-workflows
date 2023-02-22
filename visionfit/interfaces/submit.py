@@ -43,8 +43,16 @@ class SubmitInterface:
 
     def on_button_submit(self, _):
         clear_output()
-
+        is_preview = self.type_of_jobs_dropdown.value == "Previews"
+        print('Validating parameters and computing frame estimate...', flush=True)
+        try:
+            total_est_frames = sum(self.sesh.estimate_samples(self.job_params, is_preview=is_preview))
+        except (ValueError, ParameterValidationError) as e:
+            print(str(e))
+            return
+        clear_output()
         print("Please confirm that you want to submit this batch.\n")
+        print(f"Estimated number of frames to render: {total_est_frames}")
         print(f"Number of Jobs: {len(self.job_params)}\n")
         print(f"Type of Jobs: {self.type_of_jobs_dropdown.value}")
         self.button_confirm.layout.display = "block"
