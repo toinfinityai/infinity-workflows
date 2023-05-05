@@ -9,7 +9,8 @@ from visionfit.interfaces.common import get_workflow_templates_path, get_datetim
 from visionfit.utils.notebook import suppress_useless_warnings
 from infinity_tools.visionfit.api import VisionFitSession
 from infinity_core.session import ParameterValidationError
-
+from infinity_core.batch import BatchEstimationError, BatchSubmissionError
+from colorama import Fore, Style
 
 class SubmitInterface:
     """Class to generate/interact with batch submission."""
@@ -47,8 +48,9 @@ class SubmitInterface:
         print('Validating parameters and computing frame estimate...', flush=True)
         try:
             total_est_frames = sum(self.sesh.estimate_samples(self.job_params, is_preview=is_preview))
-        except (ValueError, ParameterValidationError) as e:
-            print(str(e))
+        except (ValueError, ParameterValidationError, BatchEstimationError) as e:
+            print("\n" + Fore.RED + str(e))
+            print(Style.RESET_ALL)
             return
         clear_output()
         print("Please confirm that you want to submit this batch.\n")
@@ -69,8 +71,9 @@ class SubmitInterface:
                 is_preview=is_preview,
                 batch_name=self.name_input.value,
             )
-        except (ValueError, ParameterValidationError) as e:
-            print(str(e))
+        except (ValueError, ParameterValidationError, BatchSubmissionError) as e:
+            print("\n" + Fore.RED + str(e))
+            print(Style.RESET_ALL)
             return
         print("\n------- Submission Successful -------")
 

@@ -54,7 +54,7 @@ class WorkflowInterface:
         )
 
         self.server_dropdown = widgets.Select(
-            options=["https://api.toinfinity.ai/", "https://apidev.toinfinity.ai/", "https://apirnd.toinfinity.ai/"],
+            options=["https://api.toinfinity.ai/", "https://apidev.toinfinity.ai/", "https://apirnd.toinfinity.ai/", "https://apitest.toinfinity.ai/"],
             value=default_server,
             description="Server:",
             rows=3,
