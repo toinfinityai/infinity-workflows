@@ -1,0 +1,51 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Basic tests
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install and configure Poetry
+      uses: snok/install-poetry@v1
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+    - name: Install dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install --no-interaction --no-root --with dev
+    - name: Install package
+      run: poetry install --no-interaction --with dev
+    - name: Format with black
+      run: |
+        poetry run black --force-exclude docs --line-length 120 --diff --check $(git ls-files '*.py')
+    - name: Type checking with mypy
+      run: |
+        poetry run mypy --strict $(git ls-files '*.py')
+    - name: Sort imports with isort
+      run: |
+        poetry run isort --line-length 120 --diff --check $(git ls-files '*.py')
+    #- name: Lint with flake8
+    #  run: |
+    #    # stop the build if there are Python syntax errors or undefined names
+    #    flake8 . --max-line-length 120 --count --select=E9,F63,F7,F82 --show-source --statistics
+    #    # exit-zero treats all errors as warnings
+    #    flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics --exclude ./docs
+    - name: Run unit tests with pytest
+      run: |
+        poetry run pytest -m "not integration"
+    # Make docs
