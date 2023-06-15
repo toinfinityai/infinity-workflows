@@ -1,5 +1,5 @@
 import os
-import infinity_tools.visionfit.api as api
+from infinity_core.session import Session
 
 from IPython.display import FileLink
 from html import escape as html_escape
@@ -19,7 +19,7 @@ class CustomFileLink(FileLink):
     def to_html(self):
         return self._repr_html_()
 
-    def _format_path(self):
+    def _format_path(self) -> str:
         fp = "".join([self.url_prefix, html_escape(self.path)])
         return "".join(
             [
@@ -49,7 +49,7 @@ def get_datetime_str_ftm() -> str:
 def is_batch_exist(batch_id: str, token: str, generator: str, server: str):
     """Checks is batch exists and available for user"""
     try:
-        api.VisionFitSession(token=token, generator=generator, server=server).batch_from_api(batch_id=batch_id)
+        Session(token=token, generator=generator, server=server).batch_from_api(batch_id=batch_id)
         is_exist = True
     except BatchRetrievalError:
         is_exist = False

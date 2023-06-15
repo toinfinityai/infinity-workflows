@@ -7,15 +7,14 @@ from typing import List
 from IPython.display import display, clear_output, HTML
 from visionfit.interfaces.common import get_workflow_templates_path, get_datetime_str_ftm, CustomFileLink
 from visionfit.utils.notebook import suppress_useless_warnings
-from infinity_tools.visionfit.api import VisionFitSession
-from infinity_core.session import ParameterValidationError
+from infinity_core.session import ParameterValidationError, Session
 from infinity_core.batch import BatchEstimationError, BatchSubmissionError
 from colorama import Fore, Style
 
 class SubmitInterface:
     """Class to generate/interact with batch submission."""
 
-    def __init__(self, sesh: VisionFitSession, job_params: List):
+    def __init__(self, sesh: Session, job_params: List):
         suppress_useless_warnings()
         clear_output()
 
